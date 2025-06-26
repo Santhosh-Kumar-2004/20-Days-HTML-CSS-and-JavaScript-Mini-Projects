@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern To-Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f2f5, #e0e5ec); /* Light, subtle gradient */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px; /* Overall body padding */
+            box-sizing: border-box;
+            color: #333333;
+        }
+
+        /* Main container for the to-do app */
+        .todo-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px; /* Max width for responsiveness */
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* Heading style */
+        h1 {
+            font-size: 30px;
+            margin-bottom: 25px;
+            color: #222222;
+            font-weight: 700;
+        }
+
+        /* Input and add button section */
+        .input-section {
+            display: flex;
+            margin-bottom: 25px;
+            gap: 10px; /* Space between input and button */
+        }
+
+        /* Task input field */
+        .input-section input {
+            flex-grow: 1; /* Input takes available space */
+            padding: 12px 18px;
+            border: 1px solid #cccccc;
+            border-radius: 25px; /* Rounded corners */
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .input-section input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        /* Add task button */
+        .input-section button {
+            padding: 12px 25px;
+            background-color: #28a745; /* Green for add */
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            font-weight: 500;
+            box-sizing: border-box;
+        }
+
+        .input-section button:hover {
+            background-color: #218838;
+            transform: translateY(-1px);
+        }
+
+        .input-section button:active {
+            background-color: #1e7e34;
+            transform: translateY(0);
+        }
+
+        /* Task list styling */
+        .task-list {
+            list-style: none; /* Remove default list bullets */
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Individual task item */
+        .task-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f9f9f9;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Completed task styling */
+        .task-list li.completed {
+            background-color: #e6ffe6; /* Lighter green for completed */
+            text-decoration: line-through;
+            color: #888888;
+        }
+
+        /* Task text area */
+        .task-text {
+            flex-grow: 1;
+            text-align: left;
+            font-size: 17px;
+            margin-right: 15px; /* Space before buttons */
+            cursor: pointer; /* Indicate clickable */
+        }
+
+        /* Action buttons for tasks */
+        .task-actions button {
+            width: 35px; /* Fixed width for icon buttons */
+            height: 35px; /* Fixed height for icon buttons */
+            border: none;
+            border-radius: 50%; /* Circular buttons */
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px; /* Space between action buttons */
+        }
+
+        /* Delete button style */
+        .task-actions .delete-btn {
+            background-color: #dc3545; /* Red for delete */
+            color: white;
+        }
+
+        .task-actions .delete-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-1px);
+        }
+        .task-actions .delete-btn:active {
+            background-color: #bd2130;
+            transform: translateY(0);
+        }
+
+        /* Message for empty list */
+        .empty-list-message {
+            font-size: 16px;
+            color: #777777;
+            margin-top: 20px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 550px) {
+            .todo-container {
+                padding: 20px;
+                border-radius: 10px;
+            }
+
+            h1 {
+                font-size: 26px;
+                margin-bottom: 20px;
+            }
+
+            .input-section {
+                flex-direction: column; /* Stack input and button */
+                gap: 15px;
+            }
+
+            .input-section button {
+                width: 100%; /* Full width button */
+            }
+
+            .task-list li {
+                flex-direction: column; /* Stack text and buttons */
+                align-items: flex-start;
+                padding: 15px;
+            }
+
+            .task-text {
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
+
+            .task-actions {
+                width: 100%;
+                justify-content: flex-end; /* Align buttons to right */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="todo-container">
+        <h1>My To-Do List</h1>
+
+        <div class="input-section">
+            <input type="text" id="newTaskInput" placeholder="Add a new task...">
+            <button id="addTaskBtn">Add Task</button>
+        </div>
+
+        <ul class="task-list" id="taskList">
+            <!-- Tasks will be dynamically added here -->
+        </ul>
+
+        <div id="emptyMessage" class="empty-list-message" style="display: none;">
+            Your to-do list is empty. Add some tasks!
+        </div>
+    </div>
+
+    <script>
+        const newTaskInput = document.getElementById('newTaskInput');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const taskList = document.getElementById('taskList');
+        const emptyMessage = document.getElementById('emptyMessage');
+
+        // Load tasks from local storage on app load
+        document.addEventListener('DOMContentLoaded', loadTasks);
+
+        // Add task event listener
+        addTaskBtn.addEventListener('click', addTask);
+        newTaskInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        /**
+         * Adds a new task to the list.
+         */
+        function addTask() {
+            const taskText = newTaskInput.value.trim();
+
+            if (taskText !== '') {
+                createTaskElement(taskText, false); // Create task, initially not completed
+                saveTasks(); // Save updated tasks to local storage
+                newTaskInput.value = ''; // Clear input field
+                checkEmptyList(); // Update empty message visibility
+            } else {
+                // In a real app, you might show a visual alert message
+                console.log("Task cannot be empty.");
+            }
+        }
+
+        /**
+         * Creates and appends a new task list item to the DOM.
+         * @param {string} text - The text content of the task.
+         * @param {boolean} isCompleted - Whether the task is completed.
+         */
+        function createTaskElement(text, isCompleted) {
+            const listItem = document.createElement('li');
+            if (isCompleted) {
+                listItem.classList.add('completed');
+            }
+
+            const taskSpan = document.createElement('span');
+            taskSpan.classList.add('task-text');
+            taskSpan.textContent = text;
+            // Toggle completion on click
+            taskSpan.addEventListener('click', () => {
+                listItem.classList.toggle('completed');
+                saveTasks();
+            });
+
+            const taskActionsDiv = document.createElement('div');
+            taskActionsDiv.classList.add('task-actions');
+
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-btn');
+            deleteButton.innerHTML = '&times;'; // HTML entity for multiplication sign (X)
+            // Delete task on click
+            deleteButton.addEventListener('click', () => {
+                taskList.removeChild(listItem); // Remove item from DOM
+                saveTasks(); // Save updated tasks
+                checkEmptyList(); // Update empty message visibility
+            });
+
+            taskActionsDiv.appendChild(deleteButton);
+            listItem.appendChild(taskSpan);
+            listItem.appendChild(taskActionsDiv);
+            taskList.appendChild(listItem);
+        }
+
+        /**
+         * Saves the current list of tasks to local storage.
+         */
+        function saveTasks() {
+            const tasks = [];
+            taskList.querySelectorAll('li').forEach(listItem => {
+                tasks.push({
+                    text: listItem.querySelector('.task-text').textContent,
+                    completed: listItem.classList.contains('completed')
+                });
+            });
+            localStorage.setItem('todoTasks', JSON.stringify(tasks));
+        }
+
+        /**
+         * Loads tasks from local storage and renders them.
+         */
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('todoTasks') || '[]');
+            tasks.forEach(task => {
+                createTaskElement(task.text, task.completed);
+            });
+            checkEmptyList();
+        }
+
+        /**
+         * Checks if the task list is empty and shows/hides the empty message.
+         */
+        function checkEmptyList() {
+            if (taskList.children.length === 0) {
+                emptyMessage.style.display = 'block';
+            } else {
+                emptyMessage.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
